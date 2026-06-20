@@ -21,6 +21,9 @@
     --water:#3fd1c9;
     --air:#d7defa;
     --earth:#b08a63;
+    --brand-purple:#c060e0;
+    --brand-purple-deep:#8925de;
+    --brand-blue-dark:#2f3aa0;
     --ink:#eef1f8;
     --ink-dim:#9aa2ba;
     --ink-faint:#5b6478;
@@ -40,8 +43,7 @@
   body{
     font-family:'Space Grotesk', system-ui, sans-serif;
     color:var(--ink);
-    background:
-      radial-gradient(circle at 50% 38%, var(--deep-blue) 0%, var(--abyss) 48%, var(--void) 100%);
+    background:var(--void);
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
   }
@@ -174,12 +176,11 @@
     text-transform:uppercase;
     line-height:1;
     background:linear-gradient(95deg,
-      var(--ink) 0%, var(--ink) 30%,
-      var(--fire) 38%, var(--ink) 46%,
-      var(--ink) 54%, var(--water) 60%,
-      var(--ink) 66%, var(--ink) 74%,
-      var(--air) 80%, var(--ink) 86%,
-      var(--ink) 92%, var(--earth) 97%, var(--ink) 100%);
+      var(--ink) 0%, var(--ink) 26%,
+      var(--brand-purple) 34%, var(--brand-purple-deep) 40%, var(--ink) 48%,
+      var(--ink) 58%,
+      var(--brand-blue-dark) 66%, var(--brand-purple) 72%, var(--ink) 80%,
+      var(--ink) 100%);
     background-size:260% 100%;
     -webkit-background-clip:text; background-clip:text;
     color:transparent;
@@ -227,6 +228,7 @@
   }
   .logo-float{
     position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
     animation:float 7s ease-in-out infinite;
   }
   @keyframes float{
@@ -234,52 +236,22 @@
     50%{ transform:translateY(-7px); }
   }
 
-  .logo-ring{
-    position:absolute; inset:-16%;
-    border-radius:50%;
-    background:conic-gradient(from 0deg, var(--fire), var(--water), var(--air), var(--earth), var(--fire));
-    -webkit-mask-image:radial-gradient(circle, transparent 0 71%, #000 73% 83%, transparent 86%);
-            mask-image:radial-gradient(circle, transparent 0 71%, #000 73% 83%, transparent 86%);
-    filter:blur(1.5px);
-    opacity:.6;
-    animation:spin 70s linear infinite;
+  .logo-img{
+    width:100%; height:auto;
+    filter:drop-shadow(0 0 28px rgba(192,96,224,.22)) drop-shadow(0 0 54px rgba(47,58,160,.16));
+    transition:filter .5s ease, transform .5s ease;
   }
-  .logo-ring.alt{
-    inset:-7%;
-    opacity:.35;
-    -webkit-mask-image:radial-gradient(circle, transparent 0 86%, #000 88% 93%, transparent 96%);
-            mask-image:radial-gradient(circle, transparent 0 86%, #000 88% 93%, transparent 96%);
-    animation:spin 95s linear infinite reverse;
-  }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
 
-  .logo-disc{
-    position:absolute; inset:7%;
-    border-radius:50%;
-    background:
-      radial-gradient(circle at 33% 28%, rgba(255,255,255,.06), rgba(255,255,255,0) 60%),
-      rgba(8,10,17,.55);
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow:
-      0 0 46px rgba(63,140,255,.14),
-      inset 0 0 30px rgba(0,0,0,.55);
-    backdrop-filter:blur(6px);
-    display:flex; align-items:center; justify-content:center;
-    transition:box-shadow .5s ease, transform .5s ease;
-  }
-  .logo-disc svg{ width:62%; height:62%; }
-
-  .logo-frame:hover .logo-frame-inner .logo-disc,
-  .logo-frame:focus-within .logo-disc{
-    box-shadow:
-      0 0 64px rgba(63,140,255,.22),
-      inset 0 0 30px rgba(0,0,0,.5);
+  .logo-frame:hover .logo-img,
+  .logo-frame:focus-within .logo-img{
+    filter:drop-shadow(0 0 38px rgba(192,96,224,.32)) drop-shadow(0 0 70px rgba(47,58,160,.24));
   }
   .logo-frame:hover{ transform:scale(1.045); }
   .logo-frame{ transition:transform .5s ease; }
 
-  /* Quando existir um logótipo real em PNG, basta substituir o conteúdo
-     de #brandMark por: <img src="logo.png" alt="Logótipo" style="width:60%;height:auto;"> */
+  /* Logótipo: ficheiro logo.png na mesma pasta do index.html.
+     Para trocar o ficheiro, basta substituir logo.png mantendo o mesmo nome,
+     ou atualizar o atributo src da tag <img class="logo-img"> no HTML. */
 
   .tagline{
     font-size:.85rem;
@@ -402,14 +374,10 @@
       </div>
     </div>
 
-    <!-- LOGÓTIPO: pronto para receber um PNG transparente. -->
+    <!-- LOGÓTIPO: imagem PNG transparente, sem moldura/disco — só o logótipo. -->
     <div class="logo-frame">
       <div class="logo-float">
-        <div class="logo-ring"></div>
-        <div class="logo-ring alt"></div>
-        <div class="logo-disc">
-	<img src="logo.png" alt="Logótipo" style="width:120%;height:auto;">
-        </div>
+        <img class="logo-img" src="logo.png" alt="Logótipo">
       </div>
     </div>
 
@@ -434,8 +402,7 @@
         <path d="M16.5 3h-2.2A4.8 4.8 0 0 0 9.5 7.8V10H7.2v3.6h2.3V21h3.7v-7.4h2.6l.6-3.6h-3.2V8.2c0-1 .3-1.7 1.7-1.7h1.6z"/>
       </svg>
     </a>
-	-->
-<!--
+
     <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2.7" y="9" width="3.4" height="11.3"/>
@@ -443,14 +410,17 @@
         <path d="M10.4 20.3V9h3.3v1.6c.7-1.1 1.9-1.9 3.6-1.9 2.7 0 4.3 1.8 4.3 5v6.6h-3.4v-6c0-1.5-.6-2.6-2-2.6-1.1 0-1.8.8-2.1 1.5-.1.3-.1.7-.1 1.1v6z"/>
       </svg>
     </a>
--->
+
+    -->
+
     <a href="https://www.tiktok.com/@lumiapark" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 3v10.6a3.6 3.6 0 1 1-2.2-3.3"/>
         <path d="M14 3c.5 2.6 2.3 4.6 4.7 5"/>
       </svg>
     </a>
-<!--
+
+    <!--
     <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2.5" y="5.5" width="19" height="13" rx="4"/>
