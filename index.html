@@ -46,10 +46,9 @@
     font-family:'Space Grotesk', system-ui, sans-serif;
     color:var(--ink);
     background:
-      radial-gradient(ellipse 70% 55% at 50% 42%, rgba(198,79,217,.16) 0%, rgba(101,45,144,.10) 32%, transparent 68%),
-      radial-gradient(ellipse 55% 40% at 84% 10%, rgba(243,167,83,.10) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 45% at 8% 88%, rgba(101,45,144,.14) 0%, transparent 70%),
+      url('bg-nebula.jpg') center 38% / cover no-repeat,
       var(--void);
+    background-color:var(--void);
     -webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;
   }
@@ -77,6 +76,9 @@
     mix-blend-mode:screen;
     will-change:transform;
   }
+  /* Manchas de cor desativadas: a imagem real da nebulosa (bg-nebula.jpg)
+     já fornece esta textura/cor, evitando duplicação visual. */
+  .atmosphere{ display:none; }
   .blob.fire{  background:var(--brand-amber);       top:-14%; right:-14%; opacity:.12; animation:drift 24s ease-in-out infinite alternate; }
   .blob.water{ background:var(--brand-purple);       bottom:-16%; right:2%;  opacity:.12; animation:drift 30s ease-in-out infinite alternate-reverse; }
   .blob.air{   background:var(--brand-purple-deep);  top:-10%; left:-16%;  opacity:.10; animation:drift 27s ease-in-out infinite alternate; }
@@ -153,7 +155,7 @@
       radial-gradient(1.11px 1.11px at 40.5% 92.9%, rgba(255,255,255,0.42), transparent 100%),
       radial-gradient(1.23px 1.23px at 14.2% 16.5%, rgba(255,255,255,0.67), transparent 100%);
     background-size:560px 560px;
-    opacity:.55;
+    opacity:.22;
     animation:twinkleA 7s ease-in-out infinite;
     transform:translate(calc(var(--mx) * 8px), calc(var(--my) * 6px));
   }
@@ -182,24 +184,24 @@
       radial-gradient(1.37px 1.37px at 59.9% 71.4%, rgba(255,255,255,0.75), transparent 100%),
       radial-gradient(1.49px 1.49px at 57.8% 58.8%, rgba(255,255,255,0.79), transparent 100%);
     background-size:760px 760px;
-    opacity:.7;
+    opacity:.3;
     animation:twinkleB 5.5s ease-in-out infinite;
     transform:translate(calc(var(--mx) * 16px), calc(var(--my) * 11px));
   }
   @keyframes twinkleA{
-    0%,100%{ opacity:.4; }
-    50%{ opacity:.7; }
+    0%,100%{ opacity:.15; }
+    50%{ opacity:.3; }
   }
   @keyframes twinkleB{
-    0%,100%{ opacity:.55; }
-    50%{ opacity:.9; }
+    0%,100%{ opacity:.2; }
+    50%{ opacity:.42; }
   }
 
   /* ================= VINHETA DE LEGIBILIDADE ================= */
   .vignette{
     position:fixed; inset:0; z-index:2; pointer-events:none;
     background:
-      radial-gradient(circle at 50% 46%, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 38%, rgba(2,3,6,.55) 78%, rgba(2,3,6,.85) 100%);
+      radial-gradient(circle at 50% 40%, rgba(3,4,9,.38) 0%, rgba(3,4,9,.46) 30%, rgba(2,3,7,.68) 62%, rgba(2,3,6,.92) 100%);
   }
 
   /* ================= MARCAS HUD NOS CANTOS ================= */
@@ -271,11 +273,12 @@
   }
 
   .kicker{
-    font-size:.72rem;
-    letter-spacing:.32em;
+    font-size:.92rem;
+    letter-spacing:.34em;
     text-transform:uppercase;
-    color:var(--ink-faint);
-    font-weight:500;
+    color:var(--ink);
+    font-weight:600;
+    text-shadow:0 2px 14px rgba(0,0,0,.75), 0 0 22px rgba(0,0,0,.5);
   }
 
   /* ---- EM BREVE ---- */
@@ -368,12 +371,13 @@
      ou atualizar o atributo src da tag <img class="logo-img"> no HTML. */
 
   .tagline{
-    font-size:.85rem;
-    letter-spacing:.06em;
-    color:var(--ink-dim);
-    max-width:380px;
+    font-size:1.08rem;
+    letter-spacing:.04em;
+    color:#f3e9fb;
+    max-width:440px;
+    text-shadow:0 2px 16px rgba(0,0,0,.8), 0 0 26px rgba(0,0,0,.55);
   }
-  .tagline strong{ color:var(--ink); font-weight:500; }
+  .tagline strong{ color:#ffffff; font-weight:600; }
 
   /* ================= REDES SOCIAIS ================= */
   .socials{
@@ -403,9 +407,9 @@
 
   /* ================= RESPONSIVO ================= */
   @media (max-width:540px){
-    .kicker{ letter-spacing:.22em; font-size:.62rem; }
+    .kicker{ letter-spacing:.24em; font-size:.72rem; }
     .title{ letter-spacing:.2em; }
-    .tagline{ font-size:.78rem; max-width:280px; }
+    .tagline{ font-size:.92rem; max-width:300px; }
     .socials{ gap:18px; }
     .hud i{ width:18px; height:18px; }
     .hud .elem{ width:28px; height:28px; }
