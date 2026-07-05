@@ -8,12 +8,19 @@ Landing page de pré-lançamento para a marca Lumia Park, com tema dos quatro el
 Estrutura do projeto
 
 ├── index.html        # Página completa (HTML + CSS + JS num único ficheiro)
+
 ├── logo.png           # Logótipo oficial Lumia Park
+
 ├── bg-nebula.jpg       # Imagem de fundo (nebulosa, extraída do Manual da Marca)
+
 ├── elem-fire.png       # Ícone oficial — Fogo
+
 ├── elem-water.png      # Ícone oficial — Água
+
 ├── elem-air.png        # Ícone oficial — Ar
+
 ├── elem-earth.png      # Ícone oficial — Terra
+
 └── README.md
 
 
