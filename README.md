@@ -17,9 +17,6 @@ Estrutura do projeto
 └── README.md
 
 
-Todos os ficheiros devem estar na mesma pasta, junto ao index.html, pois são referenciados por caminho relativo.
-
-
 O que a página inclui
 
 Fundo animado dos 4 elementos — partículas de fogo, ondulações de água, véus de ar e motas de terra, desenhadas em <canvas>, com efeito parallax ao mover o rato/toque.
