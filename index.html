@@ -26,7 +26,7 @@
 <!-- Fontes: Cinzel Bold (título "Em Breve", conforme manual da marca) + Space Grotesk (utilitária) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Space+Grotesk:wght@400;500;600&family=Baloo+2:wght@600;700;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -755,6 +755,426 @@
     }
 
     requestAnimationFrame(frame);
+  })();
+  </script>
+
+  <!--
+    ============================================================
+    POPUP DE NEWSLETTER — Lumia Park
+    Aparece 3 segundos depois de a página carregar. Envia os
+    dados via POST para /subscribe.php (ficheiro à parte, na
+    mesma pasta do index.html).
+    ============================================================
+  -->
+  <div id="lp-newsletter-overlay" class="lp-nl-overlay" aria-hidden="true">
+    <div class="lp-nl-modal" role="dialog" aria-labelledby="lp-nl-title" aria-modal="true">
+
+      <span class="lp-nl-sparkle lp-nl-sparkle-1">✦</span>
+      <span class="lp-nl-sparkle lp-nl-sparkle-2">✦</span>
+      <span class="lp-nl-sparkle lp-nl-sparkle-3">✧</span>
+
+      <button type="button" class="lp-nl-close" id="lp-nl-close" aria-label="Fechar">&times;</button>
+
+      <div class="lp-nl-badge"><img src="logo.png" alt="Lumia Park"></div>
+
+      <!-- PASSO 1: pergunta direta sim/não -->
+      <div class="lp-nl-step" id="lp-nl-step-ask">
+        <h2 id="lp-nl-title">Queres fazer parte da magia do Lumia&nbsp;Park?</h2>
+        <p class="lp-nl-subtitle">
+          Recebe novidades, promoções e eventos em primeira mão. Sim ou não, a decisão é tua.
+        </p>
+
+        <div class="lp-nl-choices">
+          <button type="button" class="lp-nl-btn lp-nl-btn-yes" id="lp-nl-yes">
+            ✨ Sim, quero receber novidades
+          </button>
+          <button type="button" class="lp-nl-btn lp-nl-btn-no" id="lp-nl-no">
+            Agora não, obrigado
+          </button>
+        </div>
+      </div>
+
+      <!-- PASSO 2: formulário (só aparece depois de "Sim") -->
+      <div class="lp-nl-step lp-nl-step-hidden" id="lp-nl-step-form">
+        <h2 class="lp-nl-title-sm">Quase lá! ✨</h2>
+        <p class="lp-nl-subtitle">
+          Deixa o teu nome e email para confirmares a subscrição.
+        </p>
+
+        <form id="lp-nl-form" class="lp-nl-form" novalidate>
+          <input
+            type="text"
+            id="lp-nl-nome"
+            name="nome"
+            placeholder="O teu nome"
+            autocomplete="name"
+            required
+          />
+          <input
+            type="email"
+            id="lp-nl-email"
+            name="email"
+            placeholder="O teu email"
+            autocomplete="email"
+            required
+          />
+
+          <label class="lp-nl-consent" for="lp-nl-consent">
+            <input type="checkbox" id="lp-nl-consent" name="consentimento" required />
+            <span>Aceito receber comunicações do Lumia&nbsp;Park por email e autorizo a utilização do meu nome e email para esse fim. Podes cancelar a subscrição quando quiseres.</span>
+          </label>
+
+          <button type="submit" class="lp-nl-btn lp-nl-btn-yes" id="lp-nl-submit">Confirmar subscrição</button>
+          <button type="button" class="lp-nl-btn-link" id="lp-nl-back">&larr; Voltar</button>
+
+          <p class="lp-nl-msg" id="lp-nl-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    /* ===== Overlay ===== */
+    .lp-nl-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 4, 20, 0.7);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .lp-nl-overlay.lp-nl-visible {
+      display: flex;
+    }
+
+    /* ===== Modal ===== */
+    .lp-nl-modal {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(198, 79, 217, 0.35), transparent 60%),
+        linear-gradient(160deg, #1c0f33 0%, #2a1145 55%, #17102b 100%);
+      color: #f6ecff;
+      max-width: 440px;
+      width: 100%;
+      border-radius: 18px;
+      padding: 36px 30px 26px;
+      box-shadow:
+        0 0 0 1px rgba(198, 79, 217, 0.35),
+        0 25px 70px rgba(20, 4, 40, 0.55),
+        0 0 60px rgba(198, 79, 217, 0.25);
+      font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      animation: lp-nl-pop 0.3s ease-out;
+    }
+    @keyframes lp-nl-pop {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .lp-nl-sparkle {
+      position: absolute;
+      color: #F4B5CC;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .lp-nl-sparkle-1 { top: 18px; left: 26px; font-size: 14px; }
+    .lp-nl-sparkle-2 { top: 60px; right: 46px; font-size: 10px; color: #C64FD9; }
+    .lp-nl-sparkle-3 { bottom: 90px; left: 20px; font-size: 12px; color: #E49C24; opacity: 0.6; }
+
+    .lp-nl-badge {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .lp-nl-badge img {
+      height: 68px;
+      width: auto;
+      filter: drop-shadow(0 0 18px rgba(198, 79, 217, 0.45));
+    }
+
+    .lp-nl-step-hidden { display: none; }
+
+    .lp-nl-modal h2 {
+      font-family: 'Baloo 2', sans-serif;
+      font-weight: 700;
+      margin: 0 0 8px;
+      font-size: 1.5rem;
+      line-height: 1.3;
+      text-align: center;
+      background: linear-gradient(90deg, #F4B5CC, #C64FD9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .lp-nl-title-sm { font-size: 1.25rem !important; }
+
+    .lp-nl-subtitle {
+      margin: 0 0 22px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      text-align: center;
+      color: #d9c8ec;
+    }
+
+    .lp-nl-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: none;
+      border: none;
+      font-size: 1.7rem;
+      line-height: 1;
+      cursor: pointer;
+      color: #f6ecff;
+      opacity: 0.55;
+    }
+    .lp-nl-close:hover { opacity: 1; }
+
+    /* ===== Choices (passo 1) ===== */
+    .lp-nl-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ===== Form (passo 2) ===== */
+    .lp-nl-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .lp-nl-form input[type="text"],
+    .lp-nl-form input[type="email"] {
+      padding: 13px 14px;
+      border: 1px solid rgba(244, 181, 204, 0.35);
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #f6ecff;
+      outline: none;
+    }
+    .lp-nl-form input::placeholder { color: #b9a3cf; }
+    .lp-nl-form input[type="text"]:focus,
+    .lp-nl-form input[type="email"]:focus {
+      border-color: #C64FD9;
+      box-shadow: 0 0 0 3px rgba(198, 79, 217, 0.25);
+    }
+
+    /* ===== Checkbox de consentimento ===== */
+    .lp-nl-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      cursor: pointer;
+      padding: 2px 0;
+    }
+    .lp-nl-consent input[type="checkbox"] {
+      flex-shrink: 0;
+      width: 17px;
+      height: 17px;
+      margin-top: 2px;
+      accent-color: #C64FD9;
+      cursor: pointer;
+    }
+    .lp-nl-consent span {
+      font-size: 0.75rem;
+      line-height: 1.45;
+      color: #b9a3cf;
+    }
+
+    /* ===== Botões ===== */
+    .lp-nl-btn {
+      padding: 13px 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .lp-nl-btn:active { transform: scale(0.98); }
+    .lp-nl-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .lp-nl-btn-yes {
+      background: linear-gradient(90deg, #C64FD9, #652D90);
+      color: #ffffff;
+      box-shadow: 0 8px 22px rgba(198, 79, 217, 0.35);
+    }
+    .lp-nl-btn-yes:hover { opacity: 0.92; }
+
+    .lp-nl-btn-no {
+      background: transparent;
+      color: #d9c8ec;
+      border: 1px solid rgba(244, 181, 204, 0.3);
+    }
+    .lp-nl-btn-no:hover { background: rgba(255, 255, 255, 0.06); }
+
+    .lp-nl-btn-link {
+      background: none;
+      border: none;
+      color: #b9a3cf;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 2px 0;
+      text-align: left;
+      font-family: inherit;
+    }
+    .lp-nl-btn-link:hover { color: #f6ecff; }
+
+    .lp-nl-msg {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      text-align: center;
+    }
+    .lp-nl-msg.lp-nl-success { color: #9ABF21; }
+    .lp-nl-msg.lp-nl-error   { color: #f28b82; }
+
+    @media (max-width: 480px) {
+      .lp-nl-modal { padding: 30px 22px 22px; }
+      .lp-nl-badge img { height: 56px; }
+    }
+  </style>
+
+  <script>
+  (function () {
+    var STORAGE_KEY = "lp_newsletter_dismissed"; // não mostra outra vez se já respondeu (sim, não, ou subscreveu)
+    var SHOW_AFTER_MS = 3000; // aparece 3 segundos depois de carregar a página
+
+    var overlay = document.getElementById("lp-newsletter-overlay");
+    var closeBtn = document.getElementById("lp-nl-close");
+    var stepAsk = document.getElementById("lp-nl-step-ask");
+    var stepForm = document.getElementById("lp-nl-step-form");
+    var yesBtn = document.getElementById("lp-nl-yes");
+    var noBtn = document.getElementById("lp-nl-no");
+    var backBtn = document.getElementById("lp-nl-back");
+    var form = document.getElementById("lp-nl-form");
+    var msg = document.getElementById("lp-nl-msg");
+    var submitBtn = document.getElementById("lp-nl-submit");
+    var consentCheckbox = document.getElementById("lp-nl-consent");
+
+    function alreadyDismissed() {
+      try {
+        return localStorage.getItem(STORAGE_KEY) === "1";
+      } catch (e) {
+        return false;
+      }
+    }
+    function markDismissed() {
+      try {
+        localStorage.setItem(STORAGE_KEY, "1");
+      } catch (e) {}
+    }
+
+    function showPopup() {
+      if (alreadyDismissed()) return;
+      overlay.classList.add("lp-nl-visible");
+    }
+    function hidePopup() {
+      overlay.classList.remove("lp-nl-visible");
+    }
+
+    if (!alreadyDismissed()) {
+      setTimeout(showPopup, SHOW_AFTER_MS);
+    }
+
+    // Fechar (X) conta como "agora não" — não volta a incomodar
+    closeBtn.addEventListener("click", function () {
+      markDismissed();
+      hidePopup();
+    });
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) {
+        markDismissed();
+        hidePopup();
+      }
+    });
+
+    // "Agora não" — fecha e não volta a mostrar
+    noBtn.addEventListener("click", function () {
+      markDismissed();
+      hidePopup();
+    });
+
+    // "Sim, quero" — avança para o formulário
+    yesBtn.addEventListener("click", function () {
+      stepAsk.classList.add("lp-nl-step-hidden");
+      stepForm.classList.remove("lp-nl-step-hidden");
+    });
+
+    // "Voltar" — regressa à pergunta inicial
+    backBtn.addEventListener("click", function () {
+      stepForm.classList.add("lp-nl-step-hidden");
+      stepAsk.classList.remove("lp-nl-step-hidden");
+      msg.textContent = "";
+      msg.className = "lp-nl-msg";
+    });
+
+    // Valida o formato do email (ex: nome@gmail.com, nome@lumiapark.pt).
+    // Confirma que existe "@", um domínio, e uma extensão (.com, .pt, etc).
+    var EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      msg.textContent = "";
+      msg.className = "lp-nl-msg";
+
+      var nome = document.getElementById("lp-nl-nome").value.trim();
+      var email = document.getElementById("lp-nl-email").value.trim();
+
+      if (!nome || !email) {
+        msg.textContent = "Por favor preenche o nome e o email.";
+        msg.classList.add("lp-nl-error");
+        return;
+      }
+
+      if (!EMAIL_REGEX.test(email)) {
+        msg.textContent = "Introduz um email válido (ex: nome@gmail.com).";
+        msg.classList.add("lp-nl-error");
+        return;
+      }
+
+      if (!consentCheckbox.checked) {
+        msg.textContent = "Tens de aceitar o uso dos teus dados para poderes subscrever.";
+        msg.classList.add("lp-nl-error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "A enviar...";
+
+      fetch("/subscribe.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome: nome, email: email, consentimento: true, origem: "popup_landing" })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Confirmar subscrição";
+
+          if (data.success) {
+            msg.textContent = "Obrigado! A tua subscrição foi confirmada.";
+            msg.classList.add("lp-nl-success");
+            markDismissed();
+            setTimeout(hidePopup, 1800);
+          } else {
+            msg.textContent = data.message || "Ocorreu um erro. Tenta novamente.";
+            msg.classList.add("lp-nl-error");
+          }
+        })
+        .catch(function () {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Confirmar subscrição";
+          msg.textContent = "Erro de ligação. Tenta novamente mais tarde.";
+          msg.classList.add("lp-nl-error");
+        });
+    });
   })();
   </script>
 
