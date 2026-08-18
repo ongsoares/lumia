@@ -241,7 +241,7 @@
   <!-- Reserva / CTA -->
   <div class="parties-cta">
     <h3 class="cta-title">Reserva já a tua festa!</h3>
-    <a href="#reservar" class="btn-reserve">Faz a tua reserva aqui</a>
+    <button type="button" class="btn-reserve" id="lp-open-reserva">Faz a tua reserva aqui</button>
   </div>
 </section>
 
@@ -324,6 +324,149 @@
   </div>
 
   <script src="newsletter.js"></script>
+
+  <!--
+    ============================================================
+    POPUP DE RESERVA DE FESTA — Lumia Park
+    Aberto pelo botão "Faz a tua reserva aqui" (#lp-open-reserva).
+    3 passos: (1) Pacote + Data + Horas + Nº de crianças,
+    (2) Dados do aniversariante e do responsável,
+    (3) Resumo com valor calculado + confirmação.
+    Envia os dados via POST para /reservas.php (ficheiro à parte,
+    a implementar no backend).
+    ============================================================
+  -->
+  <div id="lp-reserva-overlay" class="lp-rv-overlay" aria-hidden="true">
+    <div class="lp-rv-modal" role="dialog" aria-labelledby="lp-rv-title" aria-modal="true">
+
+      <span class="lp-nl-sparkle lp-nl-sparkle-1">✦</span>
+      <span class="lp-nl-sparkle lp-nl-sparkle-2">✦</span>
+      <span class="lp-nl-sparkle lp-nl-sparkle-3">✧</span>
+
+      <button type="button" class="lp-nl-close" id="lp-rv-close" aria-label="Fechar">&times;</button>
+
+      <div class="lp-nl-badge"><img src="logo.png" alt="Lumia Park"></div>
+
+      <!-- Indicador de passos -->
+      <div class="lp-rv-steps-indicator" aria-hidden="true">
+        <span class="lp-rv-dot active" data-step-dot="1"></span>
+        <span class="lp-rv-dot" data-step-dot="2"></span>
+        <span class="lp-rv-dot" data-step-dot="3"></span>
+      </div>
+
+      <form id="lp-rv-form" class="lp-rv-form" novalidate>
+
+        <!-- ============ PASSO 1: Pacote, Data, Horas, Nº de Crianças ============ -->
+        <div class="lp-rv-step" id="lp-rv-step-1" data-step="1">
+          <h2 id="lp-rv-title">Vamos planear a festa! 🎉</h2>
+          <p class="lp-nl-subtitle">Começa por escolher o pacote e a data.</p>
+
+          <label class="lp-rv-label" for="lp-rv-pacote">Pacote <span class="lp-rv-req">*</span></label>
+          <select id="lp-rv-pacote" name="pacote" class="lp-rv-select" required>
+            <option value="" disabled selected>Escolhe um pacote</option>
+            <option value="school" data-preco="16.90" data-min="12" data-max="" data-fixo="0">Lumia School Party — 16,90€/criança (mín. 12)</option>
+            <option value="star" data-preco="19.90" data-min="12" data-max="" data-fixo="0">Lumia Star — 19,90€/criança (mín. 12)</option>
+            <option value="galaxy" data-preco="23.90" data-min="12" data-max="" data-fixo="0">Lumia Galaxy — 23,90€/criança (mín. 12)</option>
+            <option value="universe" data-preco="31.90" data-min="12" data-max="" data-fixo="0">Lumia Universe — 31,90€/criança (mín. 12)</option>
+            <option value="moon" data-preco="0" data-min="1" data-max="8" data-fixo="250">Lumia Moon — 250€ total (até 8 crianças)</option>
+          </select>
+          <p class="lp-rv-hint" id="lp-rv-pacote-hint"></p>
+
+          <label class="lp-rv-label" for="lp-rv-data">Data da Festa <span class="lp-rv-req">*</span></label>
+          <input type="date" id="lp-rv-data" name="data_festa" class="lp-rv-input lp-rv-date" required>
+
+          <label class="lp-rv-label" for="lp-rv-horas">Horas da Festa <span class="lp-rv-req">*</span></label>
+          <select id="lp-rv-horas" name="horas_festa" class="lp-rv-select" required>
+            <option value="" disabled selected>Escolhe o horário</option>
+            <option value="10:00 - 12:00">10:00 — 12:00</option>
+            <option value="12:30 - 14:30">12:30 — 14:30</option>
+            <option value="15:00 - 17:00">15:00 — 17:00</option>
+            <option value="17:30 - 19:30">17:30 — 19:30</option>
+          </select>
+
+          <label class="lp-rv-label" for="lp-rv-criancas">Número de Crianças <span class="lp-rv-req">*</span></label>
+          <input type="number" id="lp-rv-criancas" name="numero_criancas" class="lp-rv-input" min="1" placeholder="Escolhe um pacote primeiro" required disabled>
+          <p class="lp-rv-hint" id="lp-rv-criancas-hint"></p>
+
+          <button type="button" class="lp-nl-btn lp-nl-btn-yes" id="lp-rv-next-1">Continuar</button>
+          <p class="lp-rv-msg" id="lp-rv-msg-1" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- ============ PASSO 2: Aniversariante + Responsável ============ -->
+        <div class="lp-rv-step lp-nl-step-hidden" id="lp-rv-step-2" data-step="2">
+          <h2 class="lp-nl-title-sm">Quem é o aniversariante? 🎂</h2>
+          <p class="lp-nl-subtitle">E quem trata de tudo — os teus dados de contacto.</p>
+
+          <label class="lp-rv-label" for="lp-rv-aniv-nome">Nome do Aniversariante <span class="lp-rv-req">*</span></label>
+          <input type="text" id="lp-rv-aniv-nome" name="aniversariante_nome" class="lp-rv-input" placeholder="Nome da criança" autocomplete="off" required>
+
+          <div class="lp-rv-row">
+            <div class="lp-rv-col">
+              <label class="lp-rv-label" for="lp-rv-aniv-idade">Idade <span class="lp-rv-req">*</span></label>
+              <input type="number" id="lp-rv-aniv-idade" name="aniversariante_idade" class="lp-rv-input" min="0" max="17" placeholder="Anos" required>
+            </div>
+            <div class="lp-rv-col">
+              <label class="lp-rv-label" for="lp-rv-aniv-nasc">Data de Nascimento <span class="lp-rv-req">*</span></label>
+              <input type="date" id="lp-rv-aniv-nasc" name="aniversariante_nascimento" class="lp-rv-input lp-rv-date" required>
+            </div>
+          </div>
+
+          <label class="lp-rv-label" for="lp-rv-resp-nome">Nome Completo do Responsável <span class="lp-rv-req">*</span></label>
+          <input type="text" id="lp-rv-resp-nome" name="responsavel_nome" class="lp-rv-input" placeholder="O teu nome completo" autocomplete="name" required>
+
+          <div class="lp-rv-row">
+            <div class="lp-rv-col">
+              <label class="lp-rv-label" for="lp-rv-telefone">Nº Telefone <span class="lp-rv-req">*</span></label>
+              <input type="tel" id="lp-rv-telefone" name="telefone" class="lp-rv-input" placeholder="9xx xxx xxx" autocomplete="tel" required>
+            </div>
+            <div class="lp-rv-col">
+              <label class="lp-rv-label" for="lp-rv-nif">NIF</label>
+              <input type="text" id="lp-rv-nif" name="nif" class="lp-rv-input" placeholder="Opcional" inputmode="numeric" maxlength="9">
+            </div>
+          </div>
+
+          <label class="lp-rv-label" for="lp-rv-email">Email <span class="lp-rv-req">*</span></label>
+          <input type="email" id="lp-rv-email" name="email" class="lp-rv-input" placeholder="O teu email" autocomplete="email" required>
+
+          <label class="lp-rv-label" for="lp-rv-obs">Observações</label>
+          <textarea id="lp-rv-obs" name="observacoes" class="lp-rv-textarea" placeholder="Escreve aqui alergias, pedidos especiais ou qualquer outra informação (opcional)" rows="3"></textarea>
+
+          <div class="lp-rv-actions">
+            <button type="button" class="lp-nl-btn-link" id="lp-rv-back-2">&larr; Voltar</button>
+            <button type="button" class="lp-nl-btn lp-nl-btn-yes" id="lp-rv-next-2">Ver resumo</button>
+          </div>
+          <p class="lp-rv-msg" id="lp-rv-msg-2" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- ============ PASSO 3: Resumo + Valor + Confirmação ============ -->
+        <div class="lp-rv-step lp-nl-step-hidden" id="lp-rv-step-3" data-step="3">
+          <h2 class="lp-nl-title-sm">Confirma a tua reserva ✨</h2>
+          <p class="lp-nl-subtitle">Revê os dados antes de enviar o pedido.</p>
+
+          <div class="lp-rv-summary" id="lp-rv-summary"><!-- preenchido via JavaScript --></div>
+
+          <div class="lp-rv-total">
+            <span class="lp-rv-total-label">Valor estimado</span>
+            <span class="lp-rv-total-value" id="lp-rv-total-value">0,00 €</span>
+          </div>
+
+          <p class="lp-rv-note">
+            Este valor é uma estimativa. Após o envio, a nossa equipa entrará em contacto contigo para confirmar todos os detalhes da reserva.
+          </p>
+
+          <div class="lp-rv-actions">
+            <button type="button" class="lp-nl-btn-link" id="lp-rv-back-3">&larr; Voltar</button>
+            <button type="submit" class="lp-nl-btn lp-nl-btn-yes" id="lp-rv-submit">Confirmar Pedido de Reserva</button>
+          </div>
+          <p class="lp-rv-msg" id="lp-rv-msg-3" role="status" aria-live="polite"></p>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <script src="reservas.js"></script>
 
 </body>
 </html>

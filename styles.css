@@ -714,6 +714,10 @@ footer,
   border-radius: 30px;
   box-shadow: 0 6px 20px rgba(198, 79, 217, 0.4);
   transition: all 0.3s ease;
+  /* Reset para funcionar também como <button> (mantém o aspeto igual a um link) */
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .btn-reserve:hover {
@@ -939,4 +943,266 @@ footer,
     @media (max-width: 480px) {
       .lp-nl-modal { padding: 30px 22px 22px; }
       .lp-nl-badge img { height: 56px; }
+    }
+
+/* ============================================================
+   Popup de Reserva de Festa — estilos
+   Reutiliza as classes .lp-nl-* (overlay, modal, badge, close,
+   botões, sparkles, mensagens) e acrescenta as classes .lp-rv-*
+   próprias dos campos do formulário de reserva.
+   ============================================================ */
+
+    /* ===== Overlay + Modal (mesma base do newsletter, modal um pouco mais largo) ===== */
+    .lp-rv-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 4, 20, 0.7);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .lp-rv-overlay.lp-nl-visible {
+      display: flex;
+    }
+
+    .lp-rv-modal {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(198, 79, 217, 0.35), transparent 60%),
+        linear-gradient(160deg, #1c0f33 0%, #2a1145 55%, #17102b 100%);
+      color: #f6ecff;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 18px;
+      padding: 36px 30px 26px;
+      box-shadow:
+        0 0 0 1px rgba(198, 79, 217, 0.35),
+        0 25px 70px rgba(20, 4, 40, 0.55),
+        0 0 60px rgba(198, 79, 217, 0.25);
+      font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      animation: lp-nl-pop 0.3s ease-out;
+    }
+
+    /* Scrollbar discreta dentro do modal (só quando o conteúdo excede a altura do ecrã) */
+    .lp-rv-modal::-webkit-scrollbar { width: 6px; }
+    .lp-rv-modal::-webkit-scrollbar-thumb { background: rgba(198, 79, 217, 0.4); border-radius: 10px; }
+    .lp-rv-modal::-webkit-scrollbar-track { background: transparent; }
+
+    /* ===== Indicador de passos (3 pontos) ===== */
+    .lp-rv-steps-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: -4px 0 18px;
+    }
+    .lp-rv-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(244, 181, 204, 0.25);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .lp-rv-dot.active {
+      background: linear-gradient(90deg, #F4B5CC, #C64FD9);
+      transform: scale(1.3);
+    }
+
+    /* ===== Campos do formulário ===== */
+    .lp-rv-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lp-rv-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      color: #d9c8ec;
+      margin: 14px 0 6px;
+    }
+    .lp-rv-label:first-of-type { margin-top: 0; }
+
+    .lp-rv-req {
+      color: #F4B5CC;
+    }
+
+    .lp-rv-input,
+    .lp-rv-select,
+    .lp-rv-textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid rgba(244, 181, 204, 0.35);
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #f6ecff;
+      outline: none;
+    }
+    .lp-rv-textarea { resize: vertical; min-height: 70px; }
+
+    .lp-rv-input::placeholder,
+    .lp-rv-textarea::placeholder { color: #b9a3cf; }
+
+    .lp-rv-input:focus,
+    .lp-rv-select:focus,
+    .lp-rv-textarea:focus {
+      border-color: #C64FD9;
+      box-shadow: 0 0 0 3px rgba(198, 79, 217, 0.25);
+    }
+
+    .lp-rv-input:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Select estilizado — seta customizada nas cores da marca */
+    .lp-rv-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, #C64FD9 50%), linear-gradient(135deg, #C64FD9 50%, transparent 50%);
+      background-position: calc(100% - 20px) center, calc(100% - 15px) center;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    .lp-rv-select option {
+      background: #1c0f33;
+      color: #f6ecff;
+    }
+
+    /* Campo de data nativo — tingir o ícone de calendário nas cores da marca */
+    .lp-rv-date {
+      color-scheme: dark;
+      cursor: pointer;
+    }
+    .lp-rv-date::-webkit-calendar-picker-indicator {
+      filter: invert(70%) sepia(40%) saturate(900%) hue-rotate(272deg) brightness(105%);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+    .lp-rv-date::-webkit-calendar-picker-indicator:hover {
+      background: rgba(198, 79, 217, 0.18);
+    }
+
+    .lp-rv-hint {
+      font-size: 0.72rem;
+      color: #b9a3cf;
+      margin: 6px 2px 0;
+      min-height: 1.1em;
+    }
+
+    /* Duas colunas lado a lado (ex: idade + data nascimento, telefone + NIF) */
+    .lp-rv-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .lp-rv-col .lp-rv-label { margin-top: 14px; }
+
+    /* ===== Ações (Voltar + Continuar/Confirmar lado a lado) ===== */
+    .lp-rv-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .lp-rv-actions .lp-nl-btn-link { padding: 13px 4px; }
+    .lp-rv-actions .lp-nl-btn { flex: 1; }
+
+    #lp-rv-next-1 {
+      margin-top: 22px;
+      width: 100%;
+    }
+
+    .lp-rv-msg {
+      margin: 10px 0 0;
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      text-align: center;
+    }
+    .lp-rv-msg.lp-nl-success { color: #9ABF21; }
+    .lp-rv-msg.lp-nl-error   { color: #f28b82; }
+
+    /* ===== Passo 3: Resumo ===== */
+    .lp-rv-summary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(244, 181, 204, 0.2);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .lp-rv-summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.85rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
+    .lp-rv-summary-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .lp-rv-summary-row .lp-rv-summary-label {
+      color: #b9a3cf;
+      flex-shrink: 0;
+    }
+    .lp-rv-summary-row .lp-rv-summary-value {
+      color: #f6ecff;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .lp-rv-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, rgba(198, 79, 217, 0.18), rgba(101, 45, 144, 0.18));
+      border: 1px solid rgba(198, 79, 217, 0.35);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .lp-rv-total-label {
+      font-size: 0.82rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #d9c8ec;
+      font-weight: 600;
+    }
+    .lp-rv-total-value {
+      font-family: 'Baloo 2', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #F4B5CC, #C64FD9);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lp-rv-note {
+      font-size: 0.76rem;
+      line-height: 1.5;
+      color: #b9a3cf;
+      text-align: center;
+      margin: 0 0 4px;
+    }
+
+    @media (max-width: 480px) {
+      .lp-rv-modal { padding: 30px 22px 22px; }
+      .lp-rv-row { grid-template-columns: 1fr; gap: 0; }
     }
