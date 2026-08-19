@@ -812,7 +812,9 @@ footer,
       background-clip: text;
       color: transparent;
     }
-    .lp-nl-title-sm { font-size: 1.25rem !important; }
+    .lp-nl-title-sm { font-size: 1.25rem !important; 
+      text-align: center;
+    }
 
     .lp-nl-subtitle {
       margin: 0 0 22px;

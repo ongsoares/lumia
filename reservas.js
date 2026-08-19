@@ -2,8 +2,10 @@
    LumiaPark — Popup de Reserva de Festa
    Controla os 3 passos do formulário (Pacote/Data/Horas/Crianças
    -> Aniversariante/Responsável -> Resumo/Confirmação), calcula
-   o valor estimado consoante o pacote escolhido, valida os
-   campos obrigatórios e envia os dados para /reservas.php.
+   o valor estimado consoante o pacote escolhido, gera os
+   horários disponíveis consoante o dia da semana e a duração do
+   pacote, valida os campos obrigatórios e envia os dados para
+   /reservas.php.
    ============================================================ */
 (function () {
   'use strict';
@@ -23,9 +25,14 @@
   var pacoteSelect = document.getElementById('lp-rv-pacote');
   var pacoteHint = document.getElementById('lp-rv-pacote-hint');
   var dataInput = document.getElementById('lp-rv-data');
+  var dataHint = document.getElementById('lp-rv-data-hint');
   var horasSelect = document.getElementById('lp-rv-horas');
+  var horasHint = document.getElementById('lp-rv-horas-hint');
   var criancasInput = document.getElementById('lp-rv-criancas');
   var criancasHint = document.getElementById('lp-rv-criancas-hint');
+
+  var atividadeWrap = document.getElementById('lp-rv-atividade-wrap');
+  var atividadeSelect = document.getElementById('lp-rv-atividade');
 
   var anivNascInput = document.getElementById('lp-rv-aniv-nasc');
 
@@ -45,6 +52,67 @@
   if (!overlay || !openBtn || !form) return; // segurança: se algo faltar no HTML, não parte a página
 
   var EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  /* ============================================================
+     REGRAS DE FUNCIONAMENTO DO PARQUE
+     dayOfWeek: 0=Domingo, 1=Segunda, 2=Terça, 3=Quarta, 4=Quinta,
+                5=Sexta, 6=Sábado (tal como Date.prototype.getDay())
+     Estas mesmas regras estão replicadas no reservas.php, para
+     que o valor e o horário sejam sempre validados outra vez no
+     servidor e nunca só confiados ao que o browser calculou.
+     ============================================================ */
+  var REGRAS_DIA = {
+    0: { aberto: true,  abre: '10:00', fecha: '20:00' }, // Domingo
+    1: { aberto: false },                                 // Segunda — encerrado
+    2: { aberto: false },                                 // Terça — encerrado
+    3: { aberto: true,  abre: '15:00', fecha: '20:00' }, // Quarta
+    4: { aberto: true,  abre: '15:00', fecha: '20:00' }, // Quinta
+    5: { aberto: true,  abre: '10:00', fecha: '20:00' }, // Sexta
+    6: { aberto: true,  abre: '10:00', fecha: '20:00' }  // Sábado
+  };
+  var ALMOCO_INICIO = '13:00';
+  var ALMOCO_FIM = '14:00';
+  var INTERVALO_SLOTS_MIN = 30; // horas de início possíveis, de 30 em 30 minutos
+
+  function horaParaMinutos(hhmm) {
+    var partes = hhmm.split(':');
+    return parseInt(partes[0], 10) * 60 + parseInt(partes[1], 10);
+  }
+  function minutosParaHora(min) {
+    var h = String(Math.floor(min / 60)).padStart(2, '0');
+    var m = String(min % 60).padStart(2, '0');
+    return h + ':' + m;
+  }
+
+  // Devolve o dia da semana (0-6) a partir de uma data "yyyy-mm-dd",
+  // sem passar por new Date(string) para evitar problemas de fuso horário.
+  function diaDaSemana(isoDate) {
+    var partes = isoDate.split('-').map(Number);
+    var d = new Date(partes[0], partes[1] - 1, partes[2]);
+    return d.getDay();
+  }
+
+  // Gera a lista de horários {inicio, fim} possíveis para um dia da semana
+  // e uma duração de festa (minutos), respeitando a janela de abertura e
+  // excluindo qualquer festa que colida com o intervalo de almoço.
+  function gerarHorariosDisponiveis(dayOfWeek, duracaoMin) {
+    var regra = REGRAS_DIA[dayOfWeek];
+    if (!regra || !regra.aberto) return [];
+
+    var abreMin = horaParaMinutos(regra.abre);
+    var fechaMin = horaParaMinutos(regra.fecha);
+    var almocoInicioMin = horaParaMinutos(ALMOCO_INICIO);
+    var almocoFimMin = horaParaMinutos(ALMOCO_FIM);
+
+    var slots = [];
+    for (var inicio = abreMin; inicio + duracaoMin <= fechaMin; inicio += INTERVALO_SLOTS_MIN) {
+      var fim = inicio + duracaoMin;
+      var colideComAlmoco = inicio < almocoFimMin && fim > almocoInicioMin;
+      if (colideComAlmoco) continue;
+      slots.push({ inicio: minutosParaHora(inicio), fim: minutosParaHora(fim) });
+    }
+    return slots;
+  }
 
   /* ---------- Data mínima: não deixar escolher datas passadas ---------- */
   (function setMinDate() {
@@ -82,7 +150,7 @@
     });
   }
 
-  /* ---------- Passo 1: Pacote -> ajusta o campo Nº de Crianças ---------- */
+  /* ---------- Passo 1: Pacote ---------- */
   function pacoteAtual() {
     var opt = pacoteSelect.options[pacoteSelect.selectedIndex];
     if (!opt || !opt.value) return null;
@@ -92,17 +160,74 @@
       preco: parseFloat(opt.getAttribute('data-preco')) || 0,
       min: parseInt(opt.getAttribute('data-min'), 10) || 1,
       max: opt.getAttribute('data-max') ? parseInt(opt.getAttribute('data-max'), 10) : null,
-      fixo: parseFloat(opt.getAttribute('data-fixo')) || 0
+      fixo: parseFloat(opt.getAttribute('data-fixo')) || 0,
+      duracaoMin: parseInt(opt.getAttribute('data-duracao'), 10) || 0
     };
+  }
+
+  // Repõe o campo de horas ao estado "escolhe primeiro pacote e data"
+  function resetHorasSelect(texto) {
+    horasSelect.innerHTML = '<option value="" disabled selected>' + texto + '</option>';
+    horasSelect.disabled = true;
+    horasHint.textContent = '';
+  }
+
+  // Recalcula os horários disponíveis sempre que o pacote OU a data mudam,
+  // porque ambos entram na conta (duração do pacote + janela de abertura do dia).
+  function atualizarHorariosDisponiveis() {
+    var pacote = pacoteAtual();
+
+    if (!pacote) {
+      resetHorasSelect('Escolhe primeiro o pacote e a data');
+      return;
+    }
+    if (!dataInput.value) {
+      resetHorasSelect('Escolhe a data da festa');
+      return;
+    }
+
+    var dow = diaDaSemana(dataInput.value);
+    var regra = REGRAS_DIA[dow];
+
+    if (!regra.aberto) {
+      resetHorasSelect('O parque está encerrado neste dia');
+      horasHint.textContent = 'Segundas e terças-feiras o Lumia Park está encerrado. Escolhe outra data.';
+      return;
+    }
+
+    var slots = gerarHorariosDisponiveis(dow, pacote.duracaoMin);
+
+    if (slots.length === 0) {
+      resetHorasSelect('Sem horários disponíveis nesta data');
+      horasHint.textContent = 'A duração do pacote ' + pacote.nome + ' não cabe no horário de funcionamento deste dia.';
+      return;
+    }
+
+    horasSelect.innerHTML = '<option value="" disabled selected>Escolhe o horário</option>' +
+      slots.map(function (s) {
+        var valor = s.inicio + ' - ' + s.fim;
+        return '<option value="' + valor + '">' + valor.replace(' - ', ' — ') + '</option>';
+      }).join('');
+    horasSelect.disabled = false;
+
+    var horasTexto = (pacote.duracaoMin % 60 === 0)
+      ? (pacote.duracaoMin / 60) + 'h00'
+      : Math.floor(pacote.duracaoMin / 60) + 'h' + (pacote.duracaoMin % 60);
+    var janelaTexto = regra.abre + '–' + regra.fecha;
+    horasHint.textContent = 'Duração do pacote: ' + horasTexto + ' · Parque aberto ' + janelaTexto + ' (almoço ' + ALMOCO_INICIO + '–' + ALMOCO_FIM + ' indisponível).';
   }
 
   pacoteSelect.addEventListener('change', function () {
     var pacote = pacoteAtual();
     if (!pacote) return;
 
+    // Desbloqueia o campo de data assim que há um pacote escolhido
+    dataInput.disabled = false;
+    dataInput.setAttribute('placeholder', '');
+
+    // Nº de crianças
     criancasInput.disabled = false;
     criancasInput.setAttribute('min', pacote.min);
-
     if (pacote.max) {
       // Pacote Lumia Moon: nº de crianças limitado ao máximo, valor fixo (não multiplica)
       criancasInput.setAttribute('max', pacote.max);
@@ -114,7 +239,20 @@
       criancasHint.textContent = 'Mínimo de ' + pacote.min + ' crianças para este pacote · ' + formatEuro(pacote.preco) + ' por criança.';
     }
 
+    // Mostrar/exigir a Atividade Extra apenas no pacote Lumia Moon
+    var ehMoon = pacote.valor === 'moon';
+    atividadeWrap.classList.toggle('lp-nl-step-hidden', !ehMoon);
+    atividadeSelect.required = ehMoon;
+    if (!ehMoon) atividadeSelect.value = '';
+
     pacoteHint.textContent = '';
+
+    // A data pode já ter sido escolhida antes de trocar de pacote — recalcula horários
+    atualizarHorariosDisponiveis();
+  });
+
+  dataInput.addEventListener('change', function () {
+    atualizarHorariosDisponiveis();
   });
 
   nextBtn1.addEventListener('click', function () {
@@ -129,6 +267,12 @@
     }
     if (!dataInput.value) {
       msg1.textContent = 'Escolhe a data da festa.';
+      msg1.classList.add('lp-nl-error');
+      return;
+    }
+    var dow = diaDaSemana(dataInput.value);
+    if (!REGRAS_DIA[dow].aberto) {
+      msg1.textContent = 'O parque está encerrado às segundas e terças-feiras. Escolhe outra data.';
       msg1.classList.add('lp-nl-error');
       return;
     }
@@ -165,6 +309,16 @@
   nextBtn2.addEventListener('click', function () {
     msg2.textContent = '';
     msg2.className = 'lp-rv-msg';
+
+    var pacote = pacoteAtual();
+
+    // Atividade extra é obrigatória apenas quando o pacote é o Lumia Moon
+    if (pacote && pacote.valor === 'moon' && !atividadeSelect.value) {
+      msg2.textContent = 'Escolhe a atividade extra do pacote Lumia Moon (Karaokê ou Realidade Virtual).';
+      msg2.classList.add('lp-nl-error');
+      atividadeSelect.focus();
+      return;
+    }
 
     var obrigatorios = [
       document.getElementById('lp-rv-aniv-nome'),
@@ -213,6 +367,12 @@
     return partes[2] + '/' + partes[1] + '/' + partes[0];
   }
 
+  function nomeAtividade(valor) {
+    if (valor === 'karaoke') return 'Karaokê';
+    if (valor === 'realidade_virtual') return 'Realidade Virtual';
+    return '—';
+  }
+
   function calcularValor() {
     var pacote = pacoteAtual();
     if (!pacote) return 0;
@@ -228,16 +388,24 @@
     var pacote = pacoteAtual();
     var numCriancas = parseInt(criancasInput.value, 10) || 0;
     var valor = calcularValor();
+    var ehMoon = pacote && pacote.valor === 'moon';
 
     var linhas = [
       { label: 'Pacote', value: pacote ? pacote.nome : '—' },
       { label: 'Data da Festa', value: formatDataPT(dataInput.value) },
       { label: 'Horas da Festa', value: horasSelect.value || '—' },
-      { label: 'Nº de Crianças', value: numCriancas },
+      { label: 'Nº de Crianças', value: numCriancas }
+    ];
+
+    if (ehMoon) {
+      linhas.push({ label: 'Atividade Extra', value: nomeAtividade(atividadeSelect.value) });
+    }
+
+    linhas.push(
       { label: 'Aniversariante', value: document.getElementById('lp-rv-aniv-nome').value.trim() + ' (' + document.getElementById('lp-rv-aniv-idade').value + ' anos)' },
       { label: 'Responsável', value: document.getElementById('lp-rv-resp-nome').value.trim() },
       { label: 'Contacto', value: document.getElementById('lp-rv-telefone').value.trim() + ' · ' + document.getElementById('lp-rv-email').value.trim() }
-    ];
+    );
 
     summaryEl.innerHTML = linhas.map(function (l) {
       return '<div class="lp-rv-summary-row">' +
@@ -260,6 +428,8 @@
     msg3.className = 'lp-rv-msg';
 
     var pacote = pacoteAtual();
+    var ehMoon = pacote && pacote.valor === 'moon';
+
     var payload = {
       pacote: pacote ? pacote.valor : '',
       pacote_nome: pacote ? pacote.nome : '',
@@ -267,6 +437,7 @@
       horas_festa: horasSelect.value,
       numero_criancas: parseInt(criancasInput.value, 10) || 0,
       valor_estimado: calcularValor(),
+      atividade_extra: ehMoon ? atividadeSelect.value : '',
       aniversariante_nome: document.getElementById('lp-rv-aniv-nome').value.trim(),
       aniversariante_idade: document.getElementById('lp-rv-aniv-idade').value,
       aniversariante_nascimento: document.getElementById('lp-rv-aniv-nasc').value,
@@ -296,6 +467,9 @@
           form.reset();
           criancasInput.disabled = true;
           criancasInput.setAttribute('placeholder', 'Escolhe um pacote primeiro');
+          dataInput.disabled = true;
+          resetHorasSelect('Escolhe primeiro o pacote e a data');
+          atividadeWrap.classList.add('lp-nl-step-hidden');
           setTimeout(closePopup, 3200);
         } else {
           msg3.textContent = data.message || 'Ocorreu um erro. Tenta novamente.';

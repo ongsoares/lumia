@@ -358,31 +358,29 @@
 
         <!-- ============ PASSO 1: Pacote, Data, Horas, Nº de Crianças ============ -->
         <div class="lp-rv-step" id="lp-rv-step-1" data-step="1">
-          <h2 id="lp-rv-title">Vamos planear a festa! 🎉</h2>
+          <h2 class="lp-nl-title-sm" id="lp-rv-title">Vamos planear a festa! 🎉</h2>
           <p class="lp-nl-subtitle">Começa por escolher o pacote e a data.</p>
 
           <label class="lp-rv-label" for="lp-rv-pacote">Pacote <span class="lp-rv-req">*</span></label>
           <select id="lp-rv-pacote" name="pacote" class="lp-rv-select" required>
             <option value="" disabled selected>Escolhe um pacote</option>
-            <option value="school" data-preco="16.90" data-min="12" data-max="" data-fixo="0">Lumia School Party — 16,90€/criança (mín. 12)</option>
-            <option value="star" data-preco="19.90" data-min="12" data-max="" data-fixo="0">Lumia Star — 19,90€/criança (mín. 12)</option>
-            <option value="galaxy" data-preco="23.90" data-min="12" data-max="" data-fixo="0">Lumia Galaxy — 23,90€/criança (mín. 12)</option>
-            <option value="universe" data-preco="31.90" data-min="12" data-max="" data-fixo="0">Lumia Universe — 31,90€/criança (mín. 12)</option>
-            <option value="moon" data-preco="0" data-min="1" data-max="8" data-fixo="250">Lumia Moon — 250€ total (até 8 crianças)</option>
+            <option value="school" data-preco="16.90" data-min="12" data-max="" data-fixo="0" data-duracao="120">Lumia School Party — 16,90€/criança (mín. 12)</option>
+            <option value="star" data-preco="19.90" data-min="12" data-max="" data-fixo="0" data-duracao="90">Lumia Star — 19,90€/criança (mín. 12)</option>
+            <option value="galaxy" data-preco="23.90" data-min="12" data-max="" data-fixo="0" data-duracao="120">Lumia Galaxy — 23,90€/criança (mín. 12)</option>
+            <option value="universe" data-preco="31.90" data-min="12" data-max="" data-fixo="0" data-duracao="180">Lumia Universe — 31,90€/criança (mín. 12)</option>
+            <option value="moon" data-preco="0" data-min="1" data-max="8" data-fixo="250" data-duracao="120">Lumia Moon — 250€ total (até 8 crianças)</option>
           </select>
           <p class="lp-rv-hint" id="lp-rv-pacote-hint"></p>
 
           <label class="lp-rv-label" for="lp-rv-data">Data da Festa <span class="lp-rv-req">*</span></label>
-          <input type="date" id="lp-rv-data" name="data_festa" class="lp-rv-input lp-rv-date" required>
+          <input type="date" id="lp-rv-data" name="data_festa" class="lp-rv-input lp-rv-date" required disabled placeholder="Escolhe um pacote primeiro">
+          <p class="lp-rv-hint" id="lp-rv-data-hint">O Lumia Park está encerrado às segundas e terças-feiras.</p>
 
           <label class="lp-rv-label" for="lp-rv-horas">Horas da Festa <span class="lp-rv-req">*</span></label>
-          <select id="lp-rv-horas" name="horas_festa" class="lp-rv-select" required>
-            <option value="" disabled selected>Escolhe o horário</option>
-            <option value="10:00 - 12:00">10:00 — 12:00</option>
-            <option value="12:30 - 14:30">12:30 — 14:30</option>
-            <option value="15:00 - 17:00">15:00 — 17:00</option>
-            <option value="17:30 - 19:30">17:30 — 19:30</option>
+          <select id="lp-rv-horas" name="horas_festa" class="lp-rv-select" required disabled>
+            <option value="" disabled selected>Escolhe primeiro o pacote e a data</option>
           </select>
+          <p class="lp-rv-hint" id="lp-rv-horas-hint"></p>
 
           <label class="lp-rv-label" for="lp-rv-criancas">Número de Crianças <span class="lp-rv-req">*</span></label>
           <input type="number" id="lp-rv-criancas" name="numero_criancas" class="lp-rv-input" min="1" placeholder="Escolhe um pacote primeiro" required disabled>
@@ -399,6 +397,17 @@
 
           <label class="lp-rv-label" for="lp-rv-aniv-nome">Nome do Aniversariante <span class="lp-rv-req">*</span></label>
           <input type="text" id="lp-rv-aniv-nome" name="aniversariante_nome" class="lp-rv-input" placeholder="Nome da criança" autocomplete="off" required>
+
+          <!-- Atividade extra: só visível/obrigatória quando o pacote escolhido é o Lumia Moon -->
+          <div id="lp-rv-atividade-wrap" class="lp-nl-step-hidden">
+            <label class="lp-rv-label" for="lp-rv-atividade">Atividade Extra (Lumia Moon) <span class="lp-rv-req">*</span></label>
+            <select id="lp-rv-atividade" name="atividade_extra" class="lp-rv-select">
+              <option value="" disabled selected>Escolhe a atividade extra</option>
+              <option value="karaoke">🎤 Karaokê</option>
+              <option value="realidade_virtual">🥽 Realidade Virtual</option>
+            </select>
+            <p class="lp-rv-hint">Incluída nos 30 minutos extra do pacote Lumia Moon.</p>
+          </div>
 
           <div class="lp-rv-row">
             <div class="lp-rv-col">
