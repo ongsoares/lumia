@@ -7,20 +7,20 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="apple-touch-icon" href="logo.png">
-<meta name="description" content="Lumia Park — algo está a formar-se. Em breve, um novo parque de diversões em Alverca do Ribatejo.">
+<meta name="description" content="Lumia Park abre a 12 de setembro! O primeiro parque de diversões indoor de Alverca do Ribatejo. Fogo, Água, Ar e Terra à tua espera — reserva já a tua visita.">
 <link rel="canonical" href="https://lumiapark.pt/">
 
 <!-- Open Graph / Facebook, WhatsApp, LinkedIn, etc. -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lumiapark.pt/">
-<meta property="og:title" content="LumiaPark — Em Breve">
-<meta property="og:description" content="Lumia Park — algo está a formar-se. Em breve, um novo parque de diversões em Alverca do Ribatejo.">
+<meta property="og:title" content="Lumia Park — Abrimos a 12 de Setembro!">
+<meta property="og:description" content="O primeiro parque de diversões indoor de Alverca do Ribatejo. Fogo, Água, Ar e Terra à tua espera — reserva já a tua visita.">
 <meta property="og:image" content="https://lumiapark.pt/logo.png">
 
 <!-- Twitter/X Card -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LumiaPark — Em Breve">
-<meta name="twitter:description" content="Lumia Park — algo está a formar-se. Em breve, um novo parque de diversões em Alverca do Ribatejo.">
+<meta name="twitter:title" content="Lumia Park — Abrimos a 12 de Setembro!">
+<meta name="twitter:description" content="O primeiro parque de diversões indoor de Alverca do Ribatejo. Fogo, Água, Ar e Terra à tua espera — reserva já a tua visita.">
 <meta name="twitter:image" content="https://lumiapark.pt/logo.png">
 
 <!-- Fontes: Cinzel Bold (título "Em Breve", conforme manual da marca) + Space Grotesk (utilitária) -->
@@ -79,6 +79,29 @@
     </div>
 
     <p class="tagline"><strong>Algo está a formar-se.</strong><br>E tu não estás preparado!</p>
+
+        <!-- CONTAGEM DECRESCENTE + LINHA DO TEMPO DE ABERTURA -->
+        <div class="opening-wrap">
+          <div class="opening-countdown" id="lp-countdown" data-abertura="2026-09-12T09:00:00">
+            <div class="cd-unit"><span class="cd-num" id="cd-dias">--</span><span class="cd-label">dias</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit"><span class="cd-num" id="cd-horas">--</span><span class="cd-label">horas</span></div>
+            <span class="cd-sep">:</span>
+            <div class="cd-unit"><span class="cd-num" id="cd-min">--</span><span class="cd-label">min</span></div>
+          </div>
+    
+          <div class="opening-timeline">
+            <img class="tl-elem" src="elem-fire.png" alt="Fogo">
+            <span class="tl-line"></span>
+            <img class="tl-elem" src="elem-water.png" alt="Água">
+            <span class="tl-line"></span>
+            <img class="tl-elem" src="elem-air.png" alt="Ar">
+            <span class="tl-line"></span>
+            <img class="tl-elem" src="elem-earth.png" alt="Terra">
+            <span class="tl-line tl-line-final"></span>
+            <span class="tl-date">12 SET</span>
+          </div>
+        </div>
 
 <!-- SETAS LATERAIS DE SCROLL (Apontar para Baixo) -->
 <div class="scroll-arrows-wrapper" aria-hidden="true">
@@ -260,6 +283,32 @@
     <h3 class="cta-title">Reserva já a tua festa!</h3>
     <button type="button" class="btn-reserve" id="lp-open-reserva">Faz a tua reserva aqui</button>
   </div>
+</section>
+
+<!-- ================= LOCALIZAÇÃO ================= -->
+<section class="location-section" id="localizacao">
+  <div class="location-header">
+    <h2 class="location-title">Onde Estamos</h2>
+    <p class="location-subtitle">✦ Alverca do Ribatejo ✦</p>
+    <p class="location-address">Alfândega Park, Quinta da Verdelha, Ed. D, LJ 2.2 — 2619-501 Alverca do Ribatejo</p>
+  </div>
+
+  <div class="location-map-wrap">
+    <iframe
+      class="location-map"
+      src="https://www.google.com/maps?q=Alf%C3%A2ndega+Park,+Quinta+da+Verdelha,+Ed.+D,+LJ+2.2,+2619-501+Alverca+do+Ribatejo&output=embed"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Localização do Lumia Park no Google Maps">
+    </iframe>
+  </div>
+
+  <a class="btn-reserve location-btn"
+     href="https://www.google.com/maps/dir/?api=1&destination=Alf%C3%A2ndega+Park%2C+Quinta+da+Verdelha%2C+Ed.+D%2C+LJ+2.2%2C+2619-501+Alverca+do+Ribatejo"
+     target="_blank" rel="noopener noreferrer">
+    Como chegar
+  </a>
+
 </section>
 
   <script src="particles.js"></script>

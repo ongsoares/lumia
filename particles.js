@@ -3,7 +3,7 @@
    Fogo, Terra, Água e Ar desenhados em <canvas id="bg">, com
    parallax suave ao mover o rato / tocar no ecrã.
    ============================================================ */
-  (function(){
+   (function(){
     'use strict';
 
     const canvas = document.getElementById('bg');
@@ -209,3 +209,41 @@
 
     requestAnimationFrame(frame);
   })();
+
+  /* ============================================================
+   Contagem decrescente até à abertura do Lumia Park
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var el = document.getElementById('lp-countdown');
+  if (!el) return;
+
+  var abertura = new Date(el.getAttribute('data-abertura'));
+  var diasEl = document.getElementById('cd-dias');
+  var horasEl = document.getElementById('cd-horas');
+  var minEl = document.getElementById('cd-min');
+
+  function atualizar() {
+    var agora = new Date();
+    var diff = abertura - agora;
+
+    if (diff <= 0) {
+      diasEl.textContent = '00';
+      horasEl.textContent = '00';
+      minEl.textContent = '00';
+      return;
+    }
+
+    var dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    var minutos = Math.floor((diff / (1000 * 60)) % 60);
+
+    diasEl.textContent = String(dias).padStart(2, '0');
+    horasEl.textContent = String(horas).padStart(2, '0');
+    minEl.textContent = String(minutos).padStart(2, '0');
+  }
+
+  atualizar();
+  setInterval(atualizar, 60000); // atualiza a cada minuto
+})();

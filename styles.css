@@ -377,6 +377,93 @@
   }
   .tagline strong{ color:#ffffff; font-weight:600; }
 
+
+  /* ================= ABERTURA: CONTAGEM + LINHA DO TEMPO ================= */
+  .opening-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+
+  /* ---- Contagem decrescente ---- */
+  .opening-countdown{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+  }
+  .cd-unit{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    min-width:44px;
+  }
+  .cd-num{
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    font-size:clamp(1.6rem, 4.5vw, 2.3rem);
+    line-height:1;
+    background:linear-gradient(90deg, var(--brand-pink), var(--brand-purple));
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent;
+    text-shadow:0 0 30px rgba(198,79,217,.25);
+  }
+  .cd-label{
+    font-size:.68rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .cd-sep{
+    font-family:'Cinzel', serif;
+    font-size:clamp(1.4rem, 4vw, 1.9rem);
+    color:var(--ink-faint);
+    transform:translateY(-6px);
+  }
+
+  /* ---- Linha do tempo dos elementos ---- */
+  .opening-timeline{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .tl-elem{
+    width:26px; height:26px;
+    object-fit:contain;
+    opacity:.85;
+    animation:elemBreathe 6.5s ease-in-out infinite;
+  }
+  .tl-elem:nth-of-type(1){ filter:drop-shadow(0 0 6px rgba(243,138,77,.5)); animation-delay:0s; }
+  .tl-elem:nth-of-type(2){ filter:drop-shadow(0 0 6px rgba(63,150,209,.5)); animation-delay:1.6s; }
+  .tl-elem:nth-of-type(3){ filter:drop-shadow(0 0 6px rgba(101,45,144,.5)); animation-delay:3.2s; }
+  .tl-elem:nth-of-type(4){ filter:drop-shadow(0 0 6px rgba(122,184,86,.5)); animation-delay:4.8s; }
+
+  .tl-line{
+    width:30px; height:1px;
+    background:linear-gradient(90deg, rgba(244,181,204,.15), rgba(244,181,204,.5), rgba(244,181,204,.15));
+  }
+  .tl-line-final{
+    width:20px;
+  }
+
+  .tl-date{
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    font-size:.85rem;
+    letter-spacing:.08em;
+    color:var(--brand-pink);
+    white-space:nowrap;
+  }
+
+  @media (max-width:540px){
+    .opening-countdown{ gap:8px; }
+    .cd-unit{ min-width:38px; }
+    .tl-elem{ width:20px; height:20px; }
+    .tl-line{ width:18px; }
+    .tl-date{ font-size:.72rem; }
+  }
+
   /* ================= REDES SOCIAIS ================= */
   .socials{
     position:fixed; left:0; right:0; bottom:clamp(20px, 4vh, 40px);
@@ -731,6 +818,81 @@ footer,
   .pricing-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ================= SECÇÃO DE LOCALIZAÇÃO ================= */
+.location-section {
+  position: relative;
+  z-index: 10;
+  padding: 60px 20px 90px;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: var(--ink);
+  text-align: center;
+}
+
+.location-header {
+  margin-bottom: 30px;
+}
+
+.location-title {
+  position: relative;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.8rem, 4.5vw, 3rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  line-height: 1;
+  background: linear-gradient(95deg,
+    var(--ink) 0%, var(--ink) 26%,
+    var(--brand-purple) 34%, var(--brand-purple-deep) 40%, var(--ink) 48%,
+    var(--ink) 58%,
+    var(--brand-purple-deep) 66%, var(--brand-pink) 72%, var(--ink) 80%,
+    var(--ink) 100%);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 11s ease-in-out infinite alternate;
+  margin-bottom: 8px;
+}
+
+.location-subtitle {
+  font-size: 1rem;
+  color: var(--brand-pink);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.location-address {
+  color: var(--ink-dim);
+  font-size: 0.92rem;
+}
+
+.location-map-wrap {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(198, 79, 217, 0.3);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35), 0 0 30px rgba(198, 79, 217, 0.15);
+  margin-bottom: 26px;
+}
+
+.location-map {
+  width: 100%;
+  height: 380px;
+  border: 0;
+  display: block;
+  filter: saturate(0.85) contrast(1.05);
+}
+
+.location-btn {
+  display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .location-map { height: 300px; }
 }
 
 /* ============================================================
@@ -1209,7 +1371,7 @@ footer,
       .lp-rv-row { grid-template-columns: 1fr; gap: 0; }
     }
 
- /* ============================================================
+    /* ============================================================
    Setas Laterais Apontando para Baixo (Cores & Elementos Lumia)
    ============================================================ */
 .scroll-arrows-wrapper {
