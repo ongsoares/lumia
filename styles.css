@@ -61,33 +61,10 @@
     pointer-events:none;
   }
 
-  /* ================= MANCHAS ATMOSFÉRICAS (CSS) ================= */
-  .atmosphere{
-    position:fixed; inset:0; z-index:0;
-    overflow:hidden; pointer-events:none;
-  }
-  .blob{
-    position:absolute;
-    width:46vmax; height:46vmax;
-    border-radius:50%;
-    filter:blur(60px);
-    mix-blend-mode:screen;
-    will-change:transform;
-  }
-  /* Manchas de cor desativadas: a imagem real da nebulosa (bg-nebula.jpg)
-     já fornece esta textura/cor, evitando duplicação visual. */
-  .atmosphere{ display:none; }
-  .blob.fire{  background:var(--brand-amber);       top:-14%; right:-14%; opacity:.12; animation:drift 24s ease-in-out infinite alternate; }
-  .blob.water{ background:var(--brand-purple);       bottom:-16%; right:2%;  opacity:.12; animation:drift 30s ease-in-out infinite alternate-reverse; }
-  .blob.air{   background:var(--brand-purple-deep);  top:-10%; left:-16%;  opacity:.10; animation:drift 27s ease-in-out infinite alternate; }
-  .blob.earth{ background:var(--brand-purple-deep);  bottom:-14%; left:-10%; opacity:.14; animation:drift 33s ease-in-out infinite alternate-reverse; }
-
-  @keyframes drift{
-    0%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(3%,-4%) scale(1.06); }
-    100%{ transform:translate(-2%,3%) scale(.98); }
-  }
-
+  /* Nota: as manchas atmosféricas de cor (.atmosphere/.blob) foram removidas
+     — estavam desativadas via display:none (a imagem bg-nebula.jpg já dá essa
+     textura/cor), mas os elementos e as animações continuavam a existir no DOM,
+     consumindo CPU/GPU sem qualquer efeito visual. */
 
   /* ================= CAMPO DE ESTRELAS (estilo nebulosa) ================= */
   .starfield, .starfield2{
