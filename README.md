@@ -7,7 +7,7 @@ Landing page de pré-lançamento para a marca Lumia Park, com tema dos quatro el
 
 Estrutura do projeto
 
-├── index.html        # Página completa (HTML + CSS + JS num único ficheiro)
+├── index.html        # Página Principal do Projeto
 
 ├── logo.png           # Logótipo oficial Lumia Park
 
